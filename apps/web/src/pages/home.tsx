@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50">
-
-
+    <div
+      className="min-h-screen bg-slate-50 border"
+    >
       {/* Hero */}
       <section className="bg-gradient-to-br from-slate-800 to-slate-700 py-20 text-center text-white">
         <img
@@ -76,8 +76,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
-     
     </div>
   );
 }

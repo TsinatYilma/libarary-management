@@ -5,11 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Book, BookDocument } from 'src/books/schema/book.schema';
+import { Book, BookDocument } from '../books/schema/book.schema';
 import {
   BorrowedBooks,
   BorrowedBooksDocument,
 } from './schema/borrowed_books.schema';
+import { BookDetail } from "@repo/shared-types";
 import { BorrowedBooksDto } from './dto/borrowed_books.dto';
 
 @Injectable()
@@ -53,7 +54,7 @@ export class BorrowedBooksService {
     }
 
     // Step 2: Map through borrowed books and fetch each book's details
-    const borrowedBooksWithDetails = [];
+    const borrowedBooksWithDetails: BookDetail[] = [];
     for (const borrowedBook of borrowedBooks) {
       const bookId = borrowedBook.bookId;
 

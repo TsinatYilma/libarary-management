@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+      /* Language & Environment */
+      "target": "ES2020",
+      "lib": ["ES2020", "DOM"],
+      "module": "ESNext",
+      "moduleResolution": "Node",
+  
+      /* Strictness */
+      "strict": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+  
+      /* Paths & Monorepo support */
+      "baseUrl": ".",
+      "paths": {
+        "@repo/shared-types": ["packages/shared-types/src"],
+        "@repo/shared-types/*": ["packages/shared-types/src/*"]
+      },
+  
+      /* Output behavior */
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true
+    }
+  }
+  

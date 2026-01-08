@@ -9,11 +9,11 @@ import {
   Param,
 } from '@nestjs/common';
 import { BorrowedBooksService } from './borrowed_books.service';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles/role.enum';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/roles/role.enum';
 import { BorrowedBooksDto } from './dto/borrowed_books.dto';
 import { TokenService } from './token.service';
-import { PublicRoute } from 'src/auth/decorators/public.decorators';
+import { PublicRoute } from '../auth/decorators/public.decorators';
 
 @Controller('books/borrowed')
 export class BorrowedBooksController {
