@@ -2,11 +2,12 @@
   "name": "library",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@10.13.1","scripts": {
-  "dev:web": "pnpm --filter @apps/web dev",
-  "dev:api": "pnpm --filter @apps/api run start:dev",
-  "dev": "turbo run dev"
-},
+  "packageManager": "pnpm@10.13.1",
+  "scripts": {
+    "dev:web": "pnpm --filter @apps/web dev",
+    "dev:api": "pnpm --filter @apps/api dev",
+    "dev": "turbo run dev"
+  },
   "devDependencies": {
     "turbo": "^2.7.3"
   }

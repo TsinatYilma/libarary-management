@@ -6,8 +6,13 @@
     "resolvePackageJsonExports": true,
 
     "target": "ES2023",
+    "rootDir": "src",
     "outDir": "./dist",
-
+    "paths": {
+      "@repo/shared-types": [
+        "../../packages/shared-types/dist"
+      ]
+    },
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
 
