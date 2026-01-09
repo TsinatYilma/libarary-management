@@ -6,7 +6,7 @@ import {
   BorrowedBooks,
   BorrowedBooksSchema,
 } from './schema/borrowed_books.schema';
-import { Book, BookSchema } from 'src/books/schema/book.schema';
+import { Book, BookSchema } from '../books/schema/book.schema';
 import { TokenService } from './token.service';
 import { JwtModule } from '@nestjs/jwt';
 

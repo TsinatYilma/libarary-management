@@ -3,22 +3,22 @@ import { IsString, IsNotEmpty, IsNumber, Min, Max } from 'class-validator';
 export class BookDto {
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @IsNumber()
   @Min(1000)
   @Max(new Date().getFullYear())
-  publicationYear: number;
+  publicationYear!: number;
 
   @IsString()
   @IsNotEmpty()
-  author: string;
+  author!: string;
 
   @IsString()
   @IsNotEmpty()
-  publisher: string;
+  publisher!: string;
 
   @IsNumber()
   @Min(0)
-  quantity: number;
+  quantity!: number;
 }

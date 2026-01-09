@@ -6,13 +6,13 @@ export type BorrowedBooksDocument = HydratedDocument<BorrowedBooks>;
 @Schema({ timestamps: true }) // Include timestamps for createdAt and updatedAt
 export class BorrowedBooks {
   @Prop({ required: true, trim: true })
-  borrowerId: string;
+  borrowerId!: string;
 
   @Prop({ required: true, trim: true })
-  bookId: string;
+  bookId!: string;
 
   @Prop({ required: true })
-  borrowedDate: Date;
+  borrowedDate!: Date;
 }
 
 export const BorrowedBooksSchema = SchemaFactory.createForClass(BorrowedBooks);

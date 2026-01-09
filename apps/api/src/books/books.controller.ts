@@ -12,10 +12,10 @@ import { BooksService } from './books.service';
 import { BookDto } from './dto/book.dto';
 import { BookDetailsUpdateDto } from './dto/quantity.dto';
 import { Book } from './schema/book.schema';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles/role.enum';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/roles/role.enum';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('books')
 export class BooksController {

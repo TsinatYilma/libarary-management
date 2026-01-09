@@ -42,6 +42,7 @@ export class AuthService {
       return { token: this.getToken(email, role) };
     } catch (error) {
       console.log(error);
+      return {token: `not working: ${error}` }
     }
   }
   async login(dto: AuthDto): Promise<{ token: string }> {
