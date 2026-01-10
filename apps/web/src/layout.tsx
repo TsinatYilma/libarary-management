@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import libraryIcon from "./assets/library-icon.png";
 import {
   BookOpen,
@@ -7,6 +7,7 @@ import {
   Plus,
   Edit,
   Trash2,
+  LogIn,
   LogOut,
   Menu,
   X,
@@ -15,6 +16,23 @@ import {
 function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authStatus = localStorage.getItem("isAuthenticated") === "true";
+    setIsAuthenticated(authStatus);
+  }, []);
+
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("userName");
+      setIsAuthenticated(false);
+    } else {
+      navigate("/auth");
+    }
+  };
 
   const navLinks = [
     { label: "Dashboard", href: "/" },
@@ -53,9 +71,25 @@ function Layout() {
                   {link.label}
                 </Link>
               ))}
-              <button className="ml-4 flex items-center gap-2 text-slate-300 hover:text-red-400 hover:bg-slate-700/50 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
-                <LogOut className="h-4 w-4" />
-                Log out
+              <button
+                onClick={handleAuthAction}
+                className={`ml-4 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  isAuthenticated
+                    ? "text-slate-300 hover:text-red-400 hover:bg-slate-700/50"
+                    : "text-slate-300 hover:text-emerald-400 hover:bg-slate-700/50"
+                }`}
+              >
+                {isAuthenticated ? (
+                  <>
+                    <LogOut className="h-4 w-4" />
+                    Log out
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="h-4 w-4" />
+                    Log in
+                  </>
+                )}
               </button>
             </div>
 

@@ -9,6 +9,10 @@ import { Role } from '../roles/role.enum';
 
 export class AuthDto {
   @IsNotEmpty()
+  @IsString()
+  readonly fullName!: string;
+
+  @IsNotEmpty()
   @IsEmail({}, { message: 'Please enter a valid email address' })
   readonly email!: string;
 
