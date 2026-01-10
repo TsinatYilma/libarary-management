@@ -45,7 +45,7 @@ export class AuthService {
       return {token: `not working: ${error}` }
     }
   }
-  async login(dto: AuthDto): Promise<{ token: string }> {
+  async login(dto: AuthDto): Promise<{ token: string }> { 
     const { email, password, role } = dto;
 
     const user = await this.userModel.findOne({ email });
