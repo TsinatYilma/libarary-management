@@ -3,7 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthDto } from './dto/auth.dto';
+import { signupDTO, LoginDto } from './dto/auth.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schema/user.schema';
 import { Model } from 'mongoose';
@@ -24,8 +24,8 @@ export class AuthService {
     });
   }
 
-  async signup(dto: AuthDto): Promise<{ token: string }> {
-    const { email, password, role } = dto;
+  async signup(dto: signupDTO): Promise<{ token: string }> {
+    const { fullName, email, password, role } = dto;
     var usedBefore = await this.userModel.findOne({ email });
 
     if (usedBefore) {
@@ -35,6 +35,7 @@ export class AuthService {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await this.userModel.create({
+        fullName,
         email,
         password: hashedPassword,
         role,
@@ -42,10 +43,10 @@ export class AuthService {
       return { token: this.getToken(email, role) };
     } catch (error) {
       console.log(error);
-      return {token: `not working: ${error}` }
+      return { token: `not working: ${error}` };
     }
   }
-  async login(dto: AuthDto): Promise<{ token: string }> { 
+  async login(dto: LoginDto): Promise<{ token: string }> {
     const { email, password, role } = dto;
 
     const user = await this.userModel.findOne({ email });

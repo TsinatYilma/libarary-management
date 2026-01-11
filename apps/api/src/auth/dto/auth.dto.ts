@@ -7,10 +7,10 @@ import {
 } from 'class-validator';
 import { Role } from '../roles/role.enum';
 
-export class AuthDto {
+export class signupDTO {
   @IsNotEmpty()
   @IsString()
-  readonly fullName!: string;
+  readonly fullName?: string;
 
   @IsNotEmpty()
   @IsEmail({}, { message: 'Please enter a valid email address' })
@@ -24,4 +24,16 @@ export class AuthDto {
   @IsNotEmpty()
   @IsEnum(Role, { message: 'Role must be either Admin or User' }) // Single enum value
   readonly role!: Role;
+}
+
+export class LoginDto {
+  @IsEmail()
+  email!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password!: string;
+
+  @IsEnum(['admin', 'user'])
+  role!: string;
 }

@@ -3,36 +3,55 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from "lucide-react";
 import libraryIcon from "../assets/library-icon.png";
 import api from "../lib/api";
+import useAuthStore from "../lib/authStore";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const { isLogin, setIsLogin } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     name: "",
-    role: "member",
+    role: "user",
   });
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLogin) {
+      try {
+        console.log("this is the in the signup value: ", formData.role);
+        const res = await api.post("/auth/signup", {
+          fullName: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        });
 
-    try {
-      const res = await api.post("/auth/signup", {
-        email: formData.email,
-        password: formData.password,
-        role: "USER",
-      });
+        localStorage.setItem("token", res.data.token);
+        navigate("/");
+      } catch (err: any) {
+        console.error(err.response?.data?.message);
+        alert(err.response?.data?.message || "Signup failed");
+      }
+    } else {
+      try {
+        console.log("this is the login value: ", formData.role);
+        const res = await api.post("/auth/login", {
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        });
 
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
-    } catch (err: any) {
-      console.error(err.response?.data?.message);
-      alert(err.response?.data?.message || "Signup failed");
+        localStorage.setItem("token", res.data.token);
+        navigate("/");
+      } catch (err: any) {
+        console.error(err.response?.data?.message);
+        alert(err.response?.data?.message || "Login failed");
+      }
     }
   };
-  
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -159,23 +178,21 @@ const Auth = () => {
             </div>
 
             {/* Role Field - Only for Sign Up */}
-            {!isLogin && (
-              <div className="">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Role
-                </label>
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3  border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-slate-800 bg-white"
-                >
-                  <option value="member">Member</option>
-                  <option value="librarian">Librarian</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-            )}
+
+            <div className="">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Role
+              </label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3  border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-slate-800 bg-white"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
 
             {/* Forgot Password - Only for Login */}
             {isLogin && (

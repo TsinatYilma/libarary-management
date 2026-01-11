@@ -12,23 +12,24 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import useAuthStore from "./lib/authStore"
 
 function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isLogin, setIsLogin } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const authStatus = localStorage.getItem("isAuthenticated") === "true";
-    setIsAuthenticated(authStatus);
+    const authStatus = localStorage.getItem("isLogin") === "true";
+    setIsLogin(authStatus);
   }, []);
 
   const handleAuthAction = () => {
-    if (isAuthenticated) {
-      localStorage.removeItem("isAuthenticated");
+    if (isLogin) {
+      localStorage.removeItem("isLogin");
       localStorage.removeItem("userName");
-      setIsAuthenticated(false);
+      setIsLogin(false);
     } else {
       navigate("/auth");
     }
@@ -74,12 +75,12 @@ function Layout() {
               <button
                 onClick={handleAuthAction}
                 className={`ml-4 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isAuthenticated
+                  isLogin
                     ? "text-slate-300 hover:text-red-400 hover:bg-slate-700/50"
                     : "text-slate-300 hover:text-emerald-400 hover:bg-slate-700/50"
                 }`}
               >
-                {isAuthenticated ? (
+                {isLogin ? (
                   <>
                     <LogOut className="h-4 w-4" />
                     Log out
