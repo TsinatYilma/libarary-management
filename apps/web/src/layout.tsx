@@ -12,7 +12,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import useAuthStore from "./lib/authStore"
+import useAuthStore from "./lib/authStore";
 
 function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
