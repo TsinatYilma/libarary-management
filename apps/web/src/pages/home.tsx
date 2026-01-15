@@ -13,8 +13,15 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getBooksCount } from "../api/books";
 
 export default function Home() {
+  const { data: books = { count: 0 } } = useQuery({
+    queryKey: ["booksCount"],
+    queryFn: getBooksCount,
+    refetchInterval: 5000,
+  });
   return (
     <div className="min-h-screen bg-slate-50 border">
       {/* Hero */}
@@ -48,7 +55,7 @@ export default function Home() {
           {[
             {
               title: "Total Books",
-              value: "1,250",
+              value: books.count,
               desc: "Books available",
               icon: BookOpen,
             },

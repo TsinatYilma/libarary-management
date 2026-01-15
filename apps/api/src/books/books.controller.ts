@@ -20,7 +20,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 @Controller('books')
 export class BooksController {
   constructor(private bookService: BooksService) {}
-  @Post()
+
+  @Post('addBook')
   @Roles(Role.LIBRARY_ADMIN)
   async addBook(@Body() dto: BookDto): Promise<Book> {
     return this.bookService.addBook(dto);

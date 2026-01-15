@@ -18,6 +18,7 @@ export class BookDto {
   @IsNotEmpty()
   publisher!: string;
 
+
   @IsNumber()
   @Min(0)
   quantity!: number;

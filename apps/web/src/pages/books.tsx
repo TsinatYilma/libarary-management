@@ -11,14 +11,16 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import libraryIcon from "../assets/library-icon.png";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addBook, getBooksCount } from "../api/books";
 
 export type Book = {
   id: number; // unique identifier (could be UUID or DB id)
   title: string; // book title
   author: string; // author name
   isbn: string; // ISBN code
-  category: string;
-  status: string; // category/genre
+  publisher: string;
+  status: string; // publisher/genre
 };
 const books = [
   {
@@ -27,7 +29,7 @@ const books = [
     author: "F. Scott Fitzgerald",
     isbn: "978-0743273565",
     status: "Available",
-    category: "Fiction",
+    publisher: "Fiction",
   },
   {
     id: 2,
@@ -35,7 +37,7 @@ const books = [
     author: "Harper Lee",
     isbn: "978-0446310789",
     status: "Issued",
-    category: "Fiction",
+    publisher: "Fiction",
   },
   {
     id: 3,
@@ -43,7 +45,7 @@ const books = [
     author: "George Orwell",
     isbn: "978-0451524935",
     status: "Available",
-    category: "Dystopian",
+    publisher: "Dystopian",
   },
   {
     id: 4,
@@ -51,7 +53,7 @@ const books = [
     author: "Jane Austen",
     isbn: "978-0141439518",
     status: "Available",
-    category: "Romance",
+    publisher: "Romance",
   },
   {
     id: 5,
@@ -59,7 +61,7 @@ const books = [
     author: "J.D. Salinger",
     isbn: "978-0316769488",
     status: "Issued",
-    category: "Fiction",
+    publisher: "Fiction",
   },
   {
     id: 6,
@@ -67,7 +69,7 @@ const books = [
     author: "William Golding",
     isbn: "978-0399501487",
     status: "Available",
-    category: "Fiction",
+    publisher: "Fiction",
   },
 ];
 
@@ -80,10 +82,12 @@ const Books = () => {
     id: bookstate.length + 1,
     title: "",
     author: "",
-    isbn: "",
-    category: "",
+    publisher: "",
+    quantity: 0,
+    publicationYear: 0,
     status: "Available",
   });
+  const queryClient = useQueryClient();
 
   const navLinks = [
     { label: "Dashboard", href: "/" },
@@ -97,6 +101,14 @@ const Books = () => {
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  //add book mutation trail
+  const addBookMutation = useMutation({
+    mutationFn: addBook,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+      setAddDialogOpen(false);
+    },
+  });
   const handleAddBookForm = () => {
     console.log("the handler is fine");
     setAddDialogOpen(!addDialogOpen);
@@ -104,22 +116,21 @@ const Books = () => {
       id: bookstate.length + 1,
       title: "",
       author: "",
-      isbn: "",
-      category: "",
+      publisher: "",
+      quantity: 0,
+      publicationYear: 0,
       status: "Available",
     });
     console.log(addDialogOpen);
   };
   function handleAddBook() {
-    setBooks([...bookstate, newBook]);
-    setNewBook({
-      id: bookstate.length + 1,
-      title: "",
-      author: "",
-      isbn: "",
-      category: "",
-      status: "Available",
-    }); // reset form setAddDialogOpen(false); // close modal }
+    addBookMutation.mutate({
+      title: newBook.title,
+      author: newBook.author,
+      publisher: newBook.publisher,
+      quantity: newBook.quantity,
+      publicationYear: newBook.publicationYear,
+    });
   }
   function DeleteBook(id: number) {
     setBooks(bookstate.filter((book) => book.id !== id));
@@ -234,15 +245,15 @@ const Books = () => {
                     htmlFor="isbn"
                     className="block text-sm font-medium text-slate-700 mb-1"
                   >
-                    ISBN
+                    Publicatoin Year
                   </label>
                   <input
                     id="isbn"
-                    type="text"
+                    type="number"
                     placeholder="Enter ISBN"
-                    value={newBook.isbn}
+                    value={newBook.publicationYear}
                     onChange={(e) =>
-                      setNewBook({ ...newBook, isbn: e.target.value })
+                      setNewBook({ ...newBook, publicationYear: Number(e.target.value) })
                     }
                     className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
@@ -250,18 +261,36 @@ const Books = () => {
 
                 <div>
                   <label
-                    htmlFor="category"
+                    htmlFor="publisher"
                     className="block text-sm font-medium text-slate-700 mb-1"
                   >
-                    Category
+                    Publisher
                   </label>
                   <input
-                    id="category"
+                    id="publisher"
                     type="text"
-                    placeholder="Enter category"
-                    value={newBook.category}
+                    placeholder="Enter publisher"
+                    value={newBook.publisher}
                     onChange={(e) =>
-                      setNewBook({ ...newBook, category: e.target.value })
+                      setNewBook({ ...newBook, publisher: e.target.value })
+                    }
+                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="quantity"
+                    className="block text-sm font-medium text-slate-700 mb-1"
+                  >
+                    Quantity
+                  </label>
+                  <input
+                    id="quantity"
+                    type="number"
+                    placeholder="Enter publisher"
+                    value={newBook.quantity}
+                    onChange={(e) =>
+                      setNewBook({ ...newBook, quantity: Number(e.target.value) })
                     }
                     className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
@@ -300,7 +329,7 @@ const Books = () => {
                     ISBN
                   </th>
                   <th className="px-6 py-4 text-left font-semibold hidden sm:table-cell">
-                    Category
+                    publisher
                   </th>
                   <th className="px-6 py-4 text-left font-semibold">Status</th>
                   <th className="px-6 py-4 text-center font-semibold">
@@ -322,7 +351,7 @@ const Books = () => {
                       {book.isbn}
                     </td>
                     <td className="px-6 py-4 text-slate-500 hidden sm:table-cell">
-                      {book.category}
+                      {book.publisher}
                     </td>
                     <td className="px-6 py-4">
                       <span
