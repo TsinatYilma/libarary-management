@@ -12,6 +12,7 @@
     "turbo": "^2.7.3"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.17",
     "axios": "^1.13.2",
     "mongodb": "^7.0.0",
     "zustand": "^5.0.9"

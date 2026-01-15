@@ -8,7 +8,7 @@ export class BookDto {
   @IsNumber()
   @Min(1000)
   @Max(new Date().getFullYear())
-  publicationYear!: number;
+  publicationYear?: number;
 
   @IsString()
   @IsNotEmpty()

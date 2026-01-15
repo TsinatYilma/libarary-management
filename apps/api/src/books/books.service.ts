@@ -13,7 +13,7 @@ export class BooksService {
     const createdBook = new this.bookModel(dto);
     return createdBook.save(); // Save the book instance to the database
   }
- 
+
   async getAllBooks(): Promise<Book[]> {
     return this.bookModel.find().exec(); // Retrieve all books
   }
@@ -21,7 +21,6 @@ export class BooksService {
   async count(): Promise<number> {
     return this.bookModel.countDocuments();
   }
-  
 
   async updateQuantity(id: string, dto: BookDetailsUpdateDto): Promise<Book> {
     const book = await this.bookModel.findById(id);

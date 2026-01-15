@@ -33,7 +33,7 @@ export class BooksController {
   }
   @Get('count')
   async count() {
-       return { count: await this.bookService.count() }
+    return { count: await this.bookService.count() };
   }
   @Patch(':id')
   @Roles(Role.LIBRARY_ADMIN)
