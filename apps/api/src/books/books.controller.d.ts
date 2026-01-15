@@ -1,7 +1,9 @@
+import {Get, } from "@nestjs/common"
 import { BooksService } from './books.service';
 import { BookDto } from './dto/book.dto';
 import { BookDetailsUpdateDto } from './dto/quantity.dto';
 import { Book } from './schema/book.schema';
+
 export declare class BooksController {
     private bookService;
     constructor(bookService: BooksService);

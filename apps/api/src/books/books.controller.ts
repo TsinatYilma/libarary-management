@@ -31,7 +31,10 @@ export class BooksController {
   async getAllBooks(): Promise<Book[]> {
     return this.bookService.getAllBooks();
   }
-
+  @Get('count')
+  async count() {
+       return { count: await this.bookService.count() }
+  }
   @Patch(':id')
   @Roles(Role.LIBRARY_ADMIN)
   async updateQuantity(
