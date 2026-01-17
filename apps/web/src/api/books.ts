@@ -28,10 +28,10 @@ export async function getBooks() {
 }
 
 export async function getBooksCount() {
-    const res = await fetch("http://localhost:3000/books/count");
-    if (!res.ok) throw new Error("Failed to fetch books");
-    return res.json();
-  }
+  const res = await fetch("http://localhost:3000/books/count");
+  if (!res.ok) throw new Error("Failed to fetch books");
+  return res.json();
+}
 
 export async function deleteBook(id: string) {
   const res = await fetch(`http://localhost:3000/books/${id}`, {

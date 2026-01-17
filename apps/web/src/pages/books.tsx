@@ -11,8 +11,9 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import libraryIcon from "../assets/library-icon.png";
+import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addBook, getBooksCount } from "../api/books";
+import { addBook, getBooksCount, getBooks } from "../api/books";
 
 export type Book = {
   id: number; // unique identifier (could be UUID or DB id)
@@ -89,6 +90,11 @@ const Books = () => {
   });
   const queryClient = useQueryClient();
 
+  const { data: allBooks = [] } = useQuery<Book[]>({
+    queryKey: ["allBooks"],
+    queryFn: getBooks,
+  });
+
   const navLinks = [
     { label: "Dashboard", href: "/" },
     { label: "Books", href: "/books" },
@@ -96,7 +102,7 @@ const Books = () => {
     { label: "Settings", href: "/settings" },
   ];
 
-  const filteredBooks = bookstate.filter(
+  const filteredBooks = allBooks.filter(
     (book) =>
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase())
@@ -105,7 +111,7 @@ const Books = () => {
   const addBookMutation = useMutation({
     mutationFn: addBook,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["books"] });
+      queryClient.invalidateQueries({ queryKey: ["allBooks"] });
       setAddDialogOpen(false);
     },
   });
@@ -253,7 +259,10 @@ const Books = () => {
                     placeholder="Enter ISBN"
                     value={newBook.publicationYear}
                     onChange={(e) =>
-                      setNewBook({ ...newBook, publicationYear: Number(e.target.value) })
+                      setNewBook({
+                        ...newBook,
+                        publicationYear: Number(e.target.value),
+                      })
                     }
                     className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
@@ -290,7 +299,10 @@ const Books = () => {
                     placeholder="Enter publisher"
                     value={newBook.quantity}
                     onChange={(e) =>
-                      setNewBook({ ...newBook, quantity: Number(e.target.value) })
+                      setNewBook({
+                        ...newBook,
+                        quantity: Number(e.target.value),
+                      })
                     }
                     className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
