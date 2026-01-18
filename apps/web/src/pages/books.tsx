@@ -14,6 +14,7 @@ import libraryIcon from "../assets/library-icon.png";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addBook, getBooksCount, getBooks } from "../api/books";
+import { borrowBook } from "../api/borrowed";
 
 export type Book = {
   id: number; // unique identifier (could be UUID or DB id)
@@ -115,6 +116,21 @@ const Books = () => {
       setAddDialogOpen(false);
     },
   });
+  //borrow the book
+  const addBorrowedBookMutation = useMutation({
+    mutationFn: borrowBook,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["borrowedBooks"] });
+      setAddDialogOpen(false);
+    },
+  });
+
+  const token = localStorage.getItem("token");
+  console.log("token value: ", token);
+  const handleAddBorrowedBook = (bookid: string) => {
+    console.log("who am i?");
+    addBorrowedBookMutation.mutate(bookid);
+  };
   const handleAddBookForm = () => {
     console.log("the handler is fine");
     setAddDialogOpen(!addDialogOpen);
@@ -379,7 +395,12 @@ const Books = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <button className="p-2 hover:bg-indigo-100 rounded-lg text-indigo-600 transition-colors">
-                          <Edit className="h-4 w-4" />
+                          <Edit
+                            className="h-4 w-4"
+                            onClick={() =>
+                              handleAddBorrowedBook(String(book.id))
+                            }
+                          />
                         </button>
                         <button
                           className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors"
