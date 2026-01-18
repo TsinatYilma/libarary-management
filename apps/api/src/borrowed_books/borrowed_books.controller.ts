@@ -31,6 +31,10 @@ export class BorrowedBooksController {
     const userId = this.tokenService.extractEmail(token);
     this.borrowedBooksService.borrowBook(dto, userId);
   }
+  @Get('count')
+  async count() {
+    return { count: await this.borrowedBooksService.count() };
+  }
 
   @Roles(Role.USER)
   @Get()
@@ -49,7 +53,7 @@ export class BorrowedBooksController {
   }
 
   @Delete()
-  @PublicRoute()// Correctly set role
+  @PublicRoute() // Correctly set role
   returnAllBooks(@Headers('authorization') authHeader: string) {
     const token = authHeader.replace('Bearer ', '');
     const userId = this.tokenService.extractEmail(token);

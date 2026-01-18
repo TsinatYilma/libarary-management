@@ -15,11 +15,17 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getBooksCount } from "../api/books";
+import {getUsersCount} from "../api/auth"
 
 export default function Home() {
-  const { data: books = { count: 0 } } = useQuery({
+  const { data: booksCount = { count: 0 } } = useQuery({
     queryKey: ["booksCount"],
     queryFn: getBooksCount,
+    refetchInterval: 5000,
+  });
+  const { data: userCount = { count: 0 } } = useQuery({
+    queryKey: ["booksCount"],
+    queryFn: getUsersCount,
     refetchInterval: 5000,
   });
   return (
@@ -55,13 +61,13 @@ export default function Home() {
           {[
             {
               title: "Total Books",
-              value: books.count,
+              value: booksCount.count,
               desc: "Books available",
               icon: BookOpen,
             },
             {
               title: "Members",
-              value: "340",
+              value: userCount.count,
               desc: "Registered users",
               icon: Users,
             },

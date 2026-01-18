@@ -10,7 +10,7 @@ import {
   BorrowedBooks,
   BorrowedBooksDocument,
 } from './schema/borrowed_books.schema';
-import { BookDetail } from "@repo/shared-types";
+import { BookDetail } from '@repo/shared-types';
 import { BorrowedBooksDto } from './dto/borrowed_books.dto';
 
 @Injectable()
@@ -40,10 +40,9 @@ export class BorrowedBooksService {
       borrowedDate: new Date(),
     });
     await borrowedBook.save();
-    
   }
 
-  async getAllBorrowedBooks(borrowerId: string) :Promise<object> {
+  async getAllBorrowedBooks(borrowerId: string): Promise<object> {
     // Step 1: Find all borrowed books by the borrower ID
     const borrowedBooks = await this.borrowedBookModel
       .find({ borrowerId })
@@ -76,6 +75,10 @@ export class BorrowedBooksService {
 
     // Step 3: Return the array of book details along with borrowed book information
     return borrowedBooksWithDetails;
+  }
+
+  async count(): Promise<number> {
+    return this.borrowedBookModel.countDocuments();
   }
 
   async returnBook(id: string) {

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import libraryIcon from "s../assets/library-icon.png";
+import libraryIcon from "../assets/library-icon.png";
 
 const Members = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

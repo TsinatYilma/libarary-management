@@ -70,4 +70,14 @@ export class AuthService {
     const token = this.getToken(email, role);
     return { token: token };
   }
+  async getAllUsers() {
+    return this.userModel
+      .find()
+      .select('-password') // never expose passwords
+      .exec();
+  }
+
+  async count(): Promise<number> {
+    return this.userModel.countDocuments();
+  }
 }
