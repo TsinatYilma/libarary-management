@@ -3,7 +3,12 @@ import { HydratedDocument } from 'mongoose';
 
 export type BookDocument = HydratedDocument<Book>;
 
-@Schema({ timestamps: true }) // Include timestamps for createdAt and updatedAt
+export enum BookStatus {
+  AVAILABLE = 'available',
+  UNAVAILABLE = 'unavailable',
+}
+
+@Schema({ timestamps: true })
 export class Book {
   @Prop({ required: true, trim: true })
   title!: string;
@@ -23,6 +28,12 @@ export class Book {
 
   @Prop({ required: true, min: 0, default: 0 })
   quantity!: number;
+
+  @Prop({
+    enum: BookStatus,
+    default: BookStatus.AVAILABLE,
+  })
+  status!: BookStatus;
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);

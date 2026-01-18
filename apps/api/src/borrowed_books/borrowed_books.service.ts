@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Book, BookDocument } from '../books/schema/book.schema';
+import { Book, BookDocument, BookStatus } from '../books/schema/book.schema';
 import {
   BorrowedBooks,
   BorrowedBooksDocument,
@@ -32,6 +32,11 @@ export class BorrowedBooksService {
     }
 
     book.quantity -= 1;
+    if (book.quantity === 0) {
+      book.status = BookStatus.UNAVAILABLE;
+    } else {
+      book.status = BookStatus.AVAILABLE;
+    }
     await book.save();
 
     const borrowedBook = new this.borrowedBookModel({

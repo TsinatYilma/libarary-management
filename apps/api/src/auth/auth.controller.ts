@@ -19,14 +19,12 @@ export class AuthController {
   }
 
   @Get('allUsers')
-getAllUsers() {
-  return this.authService.getAllUsers();
-}
+  getAllUsers() {
+    return this.authService.getAllUsers();
+  }
 
-@Get('count')
+  @Get('count')
   async count() {
     return { count: await this.authService.count() };
   }
-
-
 }

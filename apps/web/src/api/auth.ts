@@ -21,9 +21,9 @@ export async function addBook(book: {
   return res.json();
 }
 
-export async function getBooks() {
-  const res = await fetch("http://localhost:3000/books");
-  if (!res.ok) throw new Error("Failed to fetch books");
+export async function getUsers() {
+  const res = await fetch("http://localhost:3000/auth/allUsers");
+  if (!res.ok) throw new Error("Failed to fetch users");
   return res.json();
 }
 

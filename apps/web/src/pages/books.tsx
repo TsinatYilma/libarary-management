@@ -189,7 +189,7 @@ const Books = () => {
               placeholder="Search by title or author..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+              className="w-full pl-12 pr-4 py-3 rounded-xl-slate-200 focus-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
             />
           </div>
           <button
@@ -242,7 +242,7 @@ const Books = () => {
                     onChange={(e) =>
                       setNewBook({ ...newBook, title: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl-slate-200 focus-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
                 </div>
 
@@ -261,7 +261,7 @@ const Books = () => {
                     onChange={(e) =>
                       setNewBook({ ...newBook, author: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl-slate-200 focus-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
                 </div>
 
@@ -283,7 +283,7 @@ const Books = () => {
                         publicationYear: Number(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl-slate-200 focus-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
                 </div>
 
@@ -302,7 +302,7 @@ const Books = () => {
                     onChange={(e) =>
                       setNewBook({ ...newBook, publisher: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl-slate-200 focus-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -323,7 +323,7 @@ const Books = () => {
                         quantity: Number(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+                    className="w-full px-4 py-2.5 text-gray-700 rounded-xl-slate-200 focus-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
                   />
                 </div>
 
@@ -331,7 +331,7 @@ const Books = () => {
                   <button
                     type="button"
                     onClick={() => setAddDialogOpen(false)}
-                    className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors"
+                    className="flex-1 px-4 py-2.5 rounded-xl-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors"
                   >
                     Cancel
                   </button>
@@ -354,15 +354,21 @@ const Books = () => {
             <table className="w-full">
               <thead>
                 <tr className="bg-slate-700 text-white">
-                  <th className="px-6 py-4 text-left font-semibold">Title</th>
-                  <th className="px-6 py-4 text-left font-semibold">Author</th>
-                  <th className="px-6 py-4 text-left font-semibold h_idden md:table-cell">
+                  <th className="px-6 py-4 text-center font-semibold">
+                    Title
+                  </th>
+                  <th className="px-6 py-4 text-center font-semibold">
+                    Author
+                  </th>
+                  <th className="px-6 py-4 text-center font-semibold h_idden md:table-cell">
                     ISBN
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold h_idden sm:table-cell">
+                  <th className="px-6 py-4 text-center font-semibold h_idden sm:table-cell">
                     publisher
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold">Status</th>
+                  <th className="px-6 py-4 text-center font-semibold">
+                    Status
+                  </th>
                   <th className="px-6 py-4 text-center font-semibold">
                     Actions
                   </th>
@@ -374,17 +380,19 @@ const Books = () => {
                     key={book._id}
                     className="hover:bg-slate-50 transition-colors"
                   >
-                    <td className="px-6 py-4 font-medium text-slate-800">
+                    <td className="px-6 py-4 text-center font-medium text-slate-800">
                       {book.title}
                     </td>
-                    <td className="px-6 py-4 text-slate-600">{book._id}</td>
-                    <td className="px-6 py-4 text-slate-500 h_idden md:table-cell">
-                      {book.isbn}
+                    <td className="px-6 py-4 text-center text-slate-600">
+                      {book.author}
                     </td>
-                    <td className="px-6 py-4 text-slate-500 h_idden sm:table-cell">
+                    <td className="px-6 py-4  text-center text-slate-500 h_idden md:table-cell">
+                      {book._id}
+                    </td>
+                    <td className="px-6 py- text-center text-slate-500 h_idden sm:table-cell">
                       {book.publisher}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-center">
                       <span
                         className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
                           book.status === "Available"
