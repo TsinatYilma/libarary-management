@@ -14,10 +14,10 @@ import libraryIcon from "../assets/library-icon.png";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addBook, getBooksCount, getBooks } from "../api/books";
-import { borrowBook } from "../api/borrowed";
+import { borrowBook, deleteBook } from "../api/borrowed";
 
 export type Book = {
-  id: number; // unique identifier (could be UUID or DB id)
+  _id: number; // unique _identifier (could be UU_ID or DB _id)
   title: string; // book title
   author: string; // author name
   isbn: string; // ISBN code
@@ -26,7 +26,7 @@ export type Book = {
 };
 const books = [
   {
-    id: 1,
+    _id: 1,
     title: "The Great Gatsby",
     author: "F. Scott Fitzgerald",
     isbn: "978-0743273565",
@@ -34,7 +34,7 @@ const books = [
     publisher: "Fiction",
   },
   {
-    id: 2,
+    _id: 2,
     title: "To Kill a Mockingbird",
     author: "Harper Lee",
     isbn: "978-0446310789",
@@ -42,7 +42,7 @@ const books = [
     publisher: "Fiction",
   },
   {
-    id: 3,
+    _id: 3,
     title: "1984",
     author: "George Orwell",
     isbn: "978-0451524935",
@@ -50,15 +50,15 @@ const books = [
     publisher: "Dystopian",
   },
   {
-    id: 4,
-    title: "Pride and Prejudice",
+    _id: 4,
+    title: "Pr_ide and Prejudice",
     author: "Jane Austen",
     isbn: "978-0141439518",
     status: "Available",
     publisher: "Romance",
   },
   {
-    id: 5,
+    _id: 5,
     title: "The Catcher in the Rye",
     author: "J.D. Salinger",
     isbn: "978-0316769488",
@@ -66,7 +66,7 @@ const books = [
     publisher: "Fiction",
   },
   {
-    id: 6,
+    _id: 6,
     title: "Lord of the Flies",
     author: "William Golding",
     isbn: "978-0399501487",
@@ -81,7 +81,7 @@ const Books = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [bookstate, setBooks] = useState<Book[]>([...books]);
   const [newBook, setNewBook] = useState({
-    id: bookstate.length + 1,
+    _id: bookstate.length + 1,
     title: "",
     author: "",
     publisher: "",
@@ -125,17 +125,14 @@ const Books = () => {
     },
   });
 
-  const token = localStorage.getItem("token");
-  console.log("token value: ", token);
-  const handleAddBorrowedBook = (bookid: string) => {
-    console.log("who am i?");
-    addBorrowedBookMutation.mutate(bookid);
+  const handleAddBorrowedBook = (book_id: string) => {
+    addBorrowedBookMutation.mutate(book_id);
   };
   const handleAddBookForm = () => {
     console.log("the handler is fine");
     setAddDialogOpen(!addDialogOpen);
     setNewBook({
-      id: bookstate.length + 1,
+      _id: bookstate.length + 1,
       title: "",
       author: "",
       publisher: "",
@@ -154,8 +151,14 @@ const Books = () => {
       publicationYear: newBook.publicationYear,
     });
   }
-  function DeleteBook(id: number) {
-    setBooks(bookstate.filter((book) => book.id !== id));
+  const deleteBookMutuation = useMutation({
+    mutationFn: deleteBook,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allBooks"] });
+    },
+  });
+  function DeleteBook(_id: string) {
+    deleteBookMutuation.mutate(_id);
   }
 
   return (
@@ -346,17 +349,17 @@ const Books = () => {
         )}
 
         {/* Books Table */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-lg overflow-h_idden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="bg-slate-700 text-white">
                   <th className="px-6 py-4 text-left font-semibold">Title</th>
                   <th className="px-6 py-4 text-left font-semibold">Author</th>
-                  <th className="px-6 py-4 text-left font-semibold hidden md:table-cell">
+                  <th className="px-6 py-4 text-left font-semibold h_idden md:table-cell">
                     ISBN
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold hidden sm:table-cell">
+                  <th className="px-6 py-4 text-left font-semibold h_idden sm:table-cell">
                     publisher
                   </th>
                   <th className="px-6 py-4 text-left font-semibold">Status</th>
@@ -365,20 +368,20 @@ const Books = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="div_ide-y div_ide-slate-100">
                 {filteredBooks.map((book) => (
                   <tr
-                    key={book.id}
+                    key={book._id}
                     className="hover:bg-slate-50 transition-colors"
                   >
                     <td className="px-6 py-4 font-medium text-slate-800">
                       {book.title}
                     </td>
-                    <td className="px-6 py-4 text-slate-600">{book.id}</td>
-                    <td className="px-6 py-4 text-slate-500 hidden md:table-cell">
+                    <td className="px-6 py-4 text-slate-600">{book._id}</td>
+                    <td className="px-6 py-4 text-slate-500 h_idden md:table-cell">
                       {book.isbn}
                     </td>
-                    <td className="px-6 py-4 text-slate-500 hidden sm:table-cell">
+                    <td className="px-6 py-4 text-slate-500 h_idden sm:table-cell">
                       {book.publisher}
                     </td>
                     <td className="px-6 py-4">
@@ -398,15 +401,15 @@ const Books = () => {
                           <Edit
                             className="h-4 w-4"
                             onClick={() =>
-                              handleAddBorrowedBook(String(book.id))
+                              handleAddBorrowedBook(String(book._id))
                             }
                           />
                         </button>
-                        <button
-                          className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors"
-                          onClick={() => DeleteBook(book.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
+                        <button className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors">
+                          <Trash2
+                            className="h-4 w-4"
+                            onClick={() => DeleteBook(String(book._id))}
+                          />
                         </button>
                       </div>
                     </td>

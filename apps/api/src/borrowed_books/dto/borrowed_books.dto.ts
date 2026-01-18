@@ -5,9 +5,4 @@ export class BorrowedBooksDto {
   @IsString()
   @IsNotEmpty()
   bookId!: string;
-
-  @IsDate()
-  @IsNotEmpty()
-  @Transform(({ value }) => new Date(value), { toClassOnly: true })
-  borrowedDate!: Date;
 }

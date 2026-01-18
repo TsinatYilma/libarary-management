@@ -1,3 +1,5 @@
+
+
 export async function borrowBook(bookId: string) {
     const payload = { bookId };
     const token = localStorage.getItem("token");
@@ -23,8 +25,8 @@ export async function borrowBook(bookId: string) {
     return res.json();
   }
   
-  export async function getUsersCount() {
-    const res = await fetch("http://localhost:3000/books/count");
+  export async function getBorrowedCount() {
+    const res = await fetch("http://localhost:3000/books/borrowed/count");
     if (!res.ok) throw new Error("Failed to fetch books");
     return res.json();
   }
