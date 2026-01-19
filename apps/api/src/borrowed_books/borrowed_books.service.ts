@@ -20,7 +20,7 @@ export class BorrowedBooksService {
     @InjectModel(BorrowedBooks.name)
     private borrowedBookModel: Model<BorrowedBooksDocument>,
   ) {}
-  async borrowBook(dto: BorrowedBooksDto, borrowerId: string) {
+  async borrowBook(dto: BorrowedBooksDto) {
     const book = await this.bookModel.findById(dto.bookId).exec();
 
     if (!book) {
@@ -38,9 +38,10 @@ export class BorrowedBooksService {
       book.status = BookStatus.AVAILABLE;
     }
     await book.save();
+    console.log('the email from admin: ', dto.User_email);
 
     const borrowedBook = new this.borrowedBookModel({
-      borrowerId,
+      borrowerId: dto.User_email,
       bookId: dto.bookId,
       borrowedDate: new Date(),
     });

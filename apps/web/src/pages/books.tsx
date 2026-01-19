@@ -79,6 +79,7 @@ const Books = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [addEmail, setAddEmail] = useState(false);
   const [bookstate, setBooks] = useState<Book[]>([...books]);
   const [newBook, setNewBook] = useState({
     _id: bookstate.length + 1,
@@ -88,6 +89,11 @@ const Books = () => {
     quantity: 0,
     publicationYear: 0,
     status: "Available",
+  });
+  const [newEmail, setNewEmail] = useState({
+    bookId: "",
+    book_title: "",
+    User_email: "",
   });
   const queryClient = useQueryClient();
 
@@ -124,9 +130,19 @@ const Books = () => {
       setAddDialogOpen(false);
     },
   });
-
-  const handleAddBorrowedBook = (book_id: string) => {
-    addBorrowedBookMutation.mutate(book_id);
+  const handleBoodidtoBorrow = () => {
+    setAddEmail(!addEmail);
+    setNewEmail({
+      bookId: "",
+      book_title: "",
+      User_email: "",
+    });
+  };
+  const handleaddEmail = () => {
+    addBorrowedBookMutation.mutate({
+      bookId: newEmail.bookId,
+      User_email: newEmail.User_email,
+    });
   };
   const handleAddBookForm = () => {
     console.log("the handler is fine");
@@ -354,9 +370,7 @@ const Books = () => {
             <table className="w-full">
               <thead>
                 <tr className="bg-slate-700 text-white">
-                  <th className="px-6 py-4 text-center font-semibold">
-                    Title
-                  </th>
+                  <th className="px-6 py-4 text-center font-semibold">Title</th>
                   <th className="px-6 py-4 text-center font-semibold">
                     Author
                   </th>
@@ -408,9 +422,14 @@ const Books = () => {
                         <button className="p-2 hover:bg-indigo-100 rounded-lg text-indigo-600 transition-colors">
                           <Edit
                             className="h-4 w-4"
-                            onClick={() =>
-                              handleAddBorrowedBook(String(book._id))
-                            }
+                            onClick={() => (
+                              handleBoodidtoBorrow(),
+                              setNewEmail({
+                                ...newEmail,
+                                book_title: book.title,
+                                bookId: String(book._id),
+                              })
+                            )}
                           />
                         </button>
                         <button className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors">
@@ -425,6 +444,75 @@ const Books = () => {
                 ))}
               </tbody>
             </table>
+            {addEmail && (
+              <div className="fixed inset-0 z-100 flex items-center justify-center">
+                <div
+                  className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                  onClick={() => setAddEmail(false)}
+                />
+                <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-slate-800">
+                      Borrowing {newEmail.book_title}
+                    </h2>
+                    <button
+                      onClick={() => setAddEmail(false)}
+                      className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                    >
+                      <X className="h-5 w-5 text-slate-500" />
+                    </button>
+                  </div>
+
+                  {/* FORM START */}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault(); // prevent page reload
+                      handleaddEmail(); // call your add function
+                    }}
+                    className="space-y-4"
+                  >
+                    <div>
+                      <label
+                        htmlFor="quantity"
+                        className="block text-sm font-medium text-slate-700 mb-2"
+                      >
+                        Borrowing User Email
+                      </label>
+                      <input
+                        id="quantity"
+                        type="text"
+                        placeholder="Enter publisher"
+                        value={newEmail.User_email}
+                        onChange={(e) =>
+                          setNewEmail({
+                            ...newEmail,
+                            User_email: e.target.value,
+                          })
+                        }
+                        className="w-full px-4 py-2.5 text-gray-700 rounded-xl-slate-200 focus-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+                      />
+                    </div>
+
+                    <div className="flex gap-3 mt-6">
+                      <button
+                        type="button"
+                        onClick={() => setAddEmail(false)}
+                        className="flex-1 px-4 py-2.5 rounded-xl-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex-1 px-4 py-2.5 rounded-xl bg-indigo-500 text-white font-medium hover:bg-indigo-600 transition-colors"
+                      >
+                        Add Email
+                      </button>
+                    </div>
+                  </form>
+                  {/* FORM END */}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

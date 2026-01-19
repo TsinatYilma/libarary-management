@@ -11,16 +11,23 @@ import {
   Phone,
 } from "lucide-react";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import libraryIcon from "../assets/library-icon.png";
-import {getUsers} from "../api/auth"
-import {User} from "@repo/shared-types"
+import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+export type  User = {
+  fullName: string;
+  email: string;
+  password: string;
+  author: string;
+  role: string;
+}
 
 const Members = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const navLinks = [
     { label: "Dashboard", href: "/" },
@@ -171,7 +178,9 @@ const Members = () => {
               </div>
             </div>
           ))}
+
         </div>
+       
       </div>
     </div>
   );

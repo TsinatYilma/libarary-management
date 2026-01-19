@@ -21,15 +21,10 @@ export class BorrowedBooksController {
     private borrowedBooksService: BorrowedBooksService,
     private tokenService: TokenService,
   ) {}
-  @Post()
-  @Roles(Role.USER)
-  async borrowBook(
-    @Headers('authorization') authHeader: string,
-    @Body() dto: BorrowedBooksDto,
-  ) {
-    const token = authHeader.replace('Bearer ', '');
-    const userId = this.tokenService.extractEmail(token);
-    this.borrowedBooksService.borrowBook(dto, userId);
+  @Post('')
+  @Roles(Role.LIBRARY_ADMIN)
+  borrowBookForUser(@Body() dto: BorrowedBooksDto) {
+    return this.borrowedBooksService.borrowBook(dto);
   }
   @Get('count')
   async count() {

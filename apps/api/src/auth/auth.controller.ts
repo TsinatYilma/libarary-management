@@ -20,7 +20,7 @@ export class AuthController {
 
   @Get('allUsers')
   getAllUsers() {
-    return this.authService.getAllUsers();
+    return this.authService.getUsersWithBorrowedCount();
   }
 
   @Get('count')

@@ -80,4 +80,34 @@ export class AuthService {
   async count(): Promise<number> {
     return this.userModel.countDocuments();
   }
+  async getUsersWithBorrowedCount() {
+    return this.userModel.aggregate([
+      // Join borrowedbooks using email
+      {
+        $lookup: {
+          from: 'borrowedbooks',
+          localField: 'email',
+          foreignField: 'borrowerId',
+          as: 'borrowedBooks',
+        },
+      },
+
+      // Count only NOT returned books
+      {
+        $addFields: {
+          booksIssued: {
+            $size: '$borrowedBooks', // no returned field in your data
+          },
+        },
+      },
+
+      // Remove sensitive or unnecessary fields
+      {
+        $project: {
+          password: 0,
+          borrowedBooks: 0,
+        },
+      },
+    ]);
+  }
 }
