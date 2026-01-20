@@ -17,20 +17,25 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addMember, getMembers, deleteMember } from "../api/member";
+import { addMember, getMembers, deleteMember, returnBook } from "../api/member";
+
+export type IssuedBook = {
+  title: string;
+  bookId: string;
+};
 
 export type Member = {
   _id: string;
   fullName: string;
   email: string;
   phone: string;
-  role: "student" | "admin" | "teacher";
-  status: "active" | "inactive";
-  createdAt: string;
-  updatedAt: string;
+  role: "student" | "admin" | "teacher"; // adjust roles as needed
+  status: "active" | "inactive"; // adjust statuses as needed
+  createdAt: string; // ISO string
+  updatedAt: string; // ISO string
   __v: number;
   booksIssued: number;
-  issuedBookTitles: string[];
+  issuedBookTitles: IssuedBook[];
 };
 
 const Members = () => {
@@ -154,24 +159,25 @@ const Members = () => {
     });
   };
   const deleteMemberMutuation = useMutation({
-      mutationFn: deleteMember,
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["allMembers"] });
-      },
-    });
-    function DeleteBook(_id: string) {
-      deleteMemberMutuation.mutate(_id);
-    }
+    mutationFn: deleteMember,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allMembers"] });
+    },
+  });
+  function DeleteBook(_id: string) {
+    deleteMemberMutuation.mutate(_id);
+  }
 
-    const deleteBookBorrowesMutuation = useMutation({
-      mutationFn: deleteMember,
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["allMembers"] });
-      },
-    });
-    function DeleteBorrowedBook(_id: string) {
-      deleteMemberMutuation.mutate(_id);
-    }
+  const deleteBookBorrowesMutuation = useMutation({
+    mutationFn: returnBook,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allMembers"] });
+    },
+  });
+  function DeleteBorrowedBook(email: string, bookId: string) {
+    console.log("so am i");
+    deleteBookBorrowesMutuation.mutate({ email, bookId: bookId });
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -411,11 +417,15 @@ const Members = () => {
                           >
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                              {book}
+                              {book.title}
                             </div>
                             <button
                               className="p-1.5 hover:bg-red-100 rounded-lg text-red-500 hover:text-red-600 transition-colors"
                               title="Return book"
+                              onClick={() => {
+                                console.log("am getting pressed!");
+                                DeleteBorrowedBook(member.email, book.bookId);
+                              }}
                             >
                               <X className="h-4 w-4" />
                             </button>
@@ -435,9 +445,10 @@ const Members = () => {
                     <Edit className="h-4 w-4" />
                     Edit
                   </button>
-                  <button 
-                  onClick={()=>(DeleteBook(member._id))}
-                  className="inline-flex items-center justify-center gap-2 bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                  <button
+                    onClick={() => DeleteBook(member._id)}
+                    className="inline-flex items-center justify-center gap-2 bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-medium transition-colors"
+                  >
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>

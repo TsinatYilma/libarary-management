@@ -31,6 +31,12 @@ export class AuthService {
     if (usedBefore) {
       throw new BadRequestException('Duplicate email.');
     }
+    if (role === 'admin') {
+      const adminExists = await this.userModel.findOne({ role: 'admin' });
+      if (adminExists) {
+        throw new BadRequestException('Admin already exists.');
+      }
+    }
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);

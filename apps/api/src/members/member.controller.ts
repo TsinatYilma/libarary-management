@@ -13,6 +13,10 @@ export class MembersController {
   create(@Body() dto: CreateMemberDto) {
     return this.membersService.create(dto);
   }
+  @Get('count')
+  async count() {
+    return { count: await this.membersService.count() };
+  }
 
   @Get('all')
   findAll() {

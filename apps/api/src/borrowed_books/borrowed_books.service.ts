@@ -105,6 +105,15 @@ export class BorrowedBooksService {
 
     return { message: 'Book returned successfully' };
   }
+  async removeBorrowedBookByDelete(borrowerEmail: string, bookId: string) {
+    console.log('SERVICE INPUT:', { borrowerEmail, bookId });
+    const result = await this.borrowedBookModel.deleteMany({
+      borrowerId: borrowerEmail,
+      bookId: bookId,
+    });
+
+    return { deletedCount: result.deletedCount };
+  }
 
   async returnAllBooks(borrowerId: string) {
     const borrowedBooks = await this.borrowedBookModel
@@ -128,5 +137,17 @@ export class BorrowedBooksService {
     await this.borrowedBookModel.deleteMany({ borrowerId }).exec();
 
     return { message: 'All books returned successfully' };
+  }
+  async removeBorrowedBook(borrowerEmail: string, bookId: string) {
+    const result = await this.borrowedBookModel.deleteOne({
+      borrowerId: borrowerEmail,
+      bookId: bookId,
+    });
+
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('No borrowed book found for this user');
+    }
+
+    return { message: 'Book removed from borrowed list successfully' };
   }
 }

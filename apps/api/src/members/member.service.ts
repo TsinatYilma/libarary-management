@@ -29,7 +29,9 @@ export class MembersService {
 
     return this.memberModel.create(dto);
   }
-
+  async count(): Promise<number> {
+    return this.memberModel.countDocuments();
+  }
   async findAll() {
     return this.memberModel.aggregate([
       // 1️⃣ Join borrowedbooks by email
@@ -64,7 +66,7 @@ export class MembersService {
                 },
               },
             },
-            { $project: { title: 1 } },
+            { $project: { title: 1, bookId: 1 } },
           ],
           as: 'issuedBooks',
         },
@@ -78,7 +80,10 @@ export class MembersService {
             $map: {
               input: '$issuedBooks',
               as: 'book',
-              in: '$$book.title',
+              in: {
+                title: '$$book.title',
+                bookId: '$$book._id', // keep as ObjectId, or $toString if needed
+              },
             },
           },
         },

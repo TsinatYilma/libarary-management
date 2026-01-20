@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getBooksCount } from "../api/books";
-import { getUsersCount } from "../api/auth";
+import { getMemberssCount } from "../api/member";
 import { getBorrowedCount } from "../api/borrowed";
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
   });
   const { data: userCount = { count: 0 } } = useQuery({
     queryKey: ["MembersCount"],
-    queryFn: getUsersCount,
+    queryFn: getMemberssCount,
     refetchInterval: 5000,
   });
   const { data: borrowedCount = { count: 0 } } = useQuery({

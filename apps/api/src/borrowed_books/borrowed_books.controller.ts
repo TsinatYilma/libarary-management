@@ -7,6 +7,8 @@ import {
   Post,
   Headers,
   Param,
+  Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { BorrowedBooksService } from './borrowed_books.service';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -21,10 +23,18 @@ export class BorrowedBooksController {
     private borrowedBooksService: BorrowedBooksService,
     private tokenService: TokenService,
   ) {}
+
   @Post('')
   @Roles(Role.LIBRARY_ADMIN)
   borrowBookForUser(@Body() dto: BorrowedBooksDto) {
     return this.borrowedBooksService.borrowBook(dto);
+  }
+  @Post('returnBook')
+  returnBorrowed(@Body() body: { email: string; bookId: string }) {
+    return this.borrowedBooksService.removeBorrowedBookByDelete(
+      body.email,
+      body.bookId,
+    );
   }
   @Get('count')
   async count() {
