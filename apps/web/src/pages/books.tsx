@@ -127,7 +127,7 @@ const Books = () => {
     mutationFn: borrowBook,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["borrowedBooks"] });
-      setAddEmail(false);
+      setAddEmail(!addEmail);
     },
   });
   const handleBoodidtoBorrow = () => {
@@ -137,6 +137,7 @@ const Books = () => {
       book_title: "",
       User_email: "",
     });
+    console.log("what the hover value", addDialogOpen);
   };
   const handleaddEmail = () => {
     addBorrowedBookMutation.mutate({

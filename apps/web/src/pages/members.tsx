@@ -17,19 +17,34 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {}
+import { addMember, getMembers, deleteMember } from "../api/member";
+
+export type Member = {
+  _id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  role: "student" | "admin" | "teacher";
+  status: "active" | "inactive";
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  booksIssued: number;
+  issuedBookTitles: string[];
+};
 
 const Members = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [newMember, setNewMember] = useState({
-    name: "",
+    fullName: "",
     email: "",
     phone: "",
     role: "",
   });
-  const [expandedMemberId, setExpandedMemberId] = useState<number | null>(null);
+  const [expandedMemberId, setExpandedMemberId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const navLinks = [
     { label: "Dashboard", href: "/" },
@@ -100,17 +115,63 @@ const Members = () => {
       issuedBooks: [],
     },
   ];
+  const { data: allMembers = [] } = useQuery<Member[]>({
+    queryKey: ["allMembers"],
+    queryFn: getMembers,
+  });
 
-  const filteredMembers = members.filter(
+  const filteredMembers = allMembers.filter(
     (member) =>
-      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const addMemberMutation = useMutation({
+    mutationFn: addMember,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allMembers"] });
+      setAddDialogOpen(false);
+    },
+  });
+
+  const handleAddMemberForm = () => {
+    console.log("the handler is fine");
+    setAddDialogOpen(!addDialogOpen);
+    setNewMember({
+      fullName: "",
+      email: "",
+      phone: "",
+      role: "",
+    });
+    console.log(addDialogOpen);
+  };
 
   const handleAddMember = () => {
-    setAddDialogOpen(false);
-    setNewMember({ name: "", email: "", phone: "", role: "" });
+    addMemberMutation.mutate({
+      fullName: newMember.fullName,
+      email: newMember.email,
+      phone: newMember.phone,
+      role: newMember.role,
+    });
   };
+  const deleteMemberMutuation = useMutation({
+      mutationFn: deleteMember,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["allMembers"] });
+      },
+    });
+    function DeleteBook(_id: string) {
+      deleteMemberMutuation.mutate(_id);
+    }
+
+    const deleteBookBorrowesMutuation = useMutation({
+      mutationFn: deleteMember,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["allMembers"] });
+      },
+    });
+    function DeleteBorrowedBook(_id: string) {
+      deleteMemberMutuation.mutate(_id);
+    }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -133,99 +194,106 @@ const Members = () => {
                 <X className="h-5 w-5 text-slate-500" />
               </button>
             </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault(); // prevent page reload
+                handleAddMember(); // call your add function
+              }}
+              className="space-y-4"
+            >
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-slate-700 mb-1"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Enter full name"
+                    value={newMember.fullName}
+                    onChange={(e) =>
+                      setNewMember({ ...newMember, fullName: e.target.value })
+                    }
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 text-gray-700 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-slate-700 mb-1"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="Enter email address"
+                    value={newMember.email}
+                    onChange={(e) =>
+                      setNewMember({ ...newMember, email: e.target.value })
+                    }
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 text-gray-700 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-slate-700 mb-1"
+                  >
+                    Phone
+                  </label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    placeholder="Enter phone number"
+                    value={newMember.phone}
+                    onChange={(e) =>
+                      setNewMember({ ...newMember, phone: e.target.value })
+                    }
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 text-gray-700 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="role"
+                    className="block text-sm font-medium text-slate-700 mb-1"
+                  >
+                    Role
+                  </label>
+                  <select
+                    id="role"
+                    value={newMember.role}
+                    onChange={(e) =>
+                      setNewMember({ ...newMember, role: e.target.value })
+                    }
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 text-gray-700 focus:ring-2 focus:ring-emerald-200 outline-none transition-all bg-white text-black"
+                  >
+                    <option value="">Select a role</option>
+                    <option value="student">Student</option>
+                    <option value="faculty">Faculty</option>
+                    <option value="staff">Staff</option>
+                  </select>
+                </div>
+              </div>
 
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-slate-700 mb-1"
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setAddDialogOpen(false)}
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors"
                 >
-                  Full Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  placeholder="Enter full name"
-                  value={newMember.name}
-                  onChange={(e) =>
-                    setNewMember({ ...newMember, name: e.target.value })
-                  }
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                />
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 text-white font-medium hover:bg-emerald-600 transition-colors"
+                >
+                  Add Member
+                </button>
               </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-slate-700 mb-1"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="Enter email address"
-                  value={newMember.email}
-                  onChange={(e) =>
-                    setNewMember({ ...newMember, email: e.target.value })
-                  }
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-medium text-slate-700 mb-1"
-                >
-                  Phone
-                </label>
-                <input
-                  id="phone"
-                  type="tel"
-                  placeholder="Enter phone number"
-                  value={newMember.phone}
-                  onChange={(e) =>
-                    setNewMember({ ...newMember, phone: e.target.value })
-                  }
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="role"
-                  className="block text-sm font-medium text-slate-700 mb-1"
-                >
-                  Role
-                </label>
-                <select
-                  id="role"
-                  value={newMember.role}
-                  onChange={(e) =>
-                    setNewMember({ ...newMember, role: e.target.value })
-                  }
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all bg-white text-black"
-                >
-                  <option value="">Select a role</option>
-                  <option value="Student">Student</option>
-                  <option value="Faculty">Faculty</option>
-                  <option value="Staff">Staff</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setAddDialogOpen(false)}
-                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddMember}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 text-white font-medium hover:bg-emerald-600 transition-colors"
-              >
-                Add Member
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       )}
@@ -260,7 +328,7 @@ const Members = () => {
             />
           </div>
           <button
-            onClick={() => setAddDialogOpen(true)}
+            onClick={handleAddMemberForm}
             className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
           >
             <Plus className="h-5 w-5" />
@@ -272,14 +340,14 @@ const Members = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredMembers.map((member) => (
             <div
-              key={member.id}
+              key={member._id}
               className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-fit"
             >
               <div className="bg-slate-700 text-white px-6 py-4 flex items-center justify-between">
-                <h3 className="font-semibold text-lg">{member.name}</h3>
+                <h3 className="font-semibold text-lg">{member.fullName}</h3>
                 <span
                   className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
-                    member.status === "Active"
+                    member.status === "active"
                       ? "bg-emerald-500/20 text-emerald-300"
                       : "bg-slate-500/20 text-slate-300"
                   }`}
@@ -307,7 +375,7 @@ const Members = () => {
                 <button
                   onClick={() =>
                     setExpandedMemberId(
-                      expandedMemberId === member.id ? null : member.id
+                      expandedMemberId === member._id ? null : member._id
                     )
                   }
                   className="w-full bg-slate-100 rounded-xl p-3 mb-4 hover:bg-slate-200 transition-colors text-left"
@@ -321,9 +389,9 @@ const Members = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-full">
-                        {member.issuedBooks.length}
+                        {member.booksIssued}
                       </span>
-                      {expandedMemberId === member.id ? (
+                      {expandedMemberId === member._id ? (
                         <ChevronUp className="h-4 w-4 text-slate-500" />
                       ) : (
                         <ChevronDown className="h-4 w-4 text-slate-500" />
@@ -332,11 +400,11 @@ const Members = () => {
                   </div>
                 </button>
 
-                {expandedMemberId === member.id && (
+                {expandedMemberId === member._id && (
                   <div className="bg-slate-50 rounded-xl p-3 mb-4 border border-slate-200">
-                    {member.issuedBooks.length > 0 ? (
+                    {member.booksIssued > 0 ? (
                       <ul className="space-y-2">
-                        {member.issuedBooks.map((book, index) => (
+                        {member.issuedBookTitles.map((book, index) => (
                           <li
                             key={index}
                             className="text-sm text-slate-600 flex items-center justify-between"
@@ -367,7 +435,9 @@ const Members = () => {
                     <Edit className="h-4 w-4" />
                     Edit
                   </button>
-                  <button className="inline-flex items-center justify-center gap-2 bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                  <button 
+                  onClick={()=>(DeleteBook(member._id))}
+                  className="inline-flex items-center justify-center gap-2 bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-medium transition-colors">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>

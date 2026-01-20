@@ -1,19 +1,13 @@
-export async function addBook(book: {
-  title: string;
-  author: string;
-  quantity: number;
-  publisher: string;
-  publicationYear: string | number; // allow string from input
+export async function addMember(member: {
+  fullName: string;
+  email: string;
+  phone: string;
+  role: string;
 }) {
-  const payload = {
-    ...book,
-    publicationYear: Number(book.publicationYear),
-  };
-
-  const res = await fetch("http://localhost:3000/books/addBook", {
+  const res = await fetch("http://localhost:3000/members", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(member),
   });
 
   if (!res.ok) throw new Error("Failed to add book");
@@ -21,9 +15,9 @@ export async function addBook(book: {
   return res.json();
 }
 
-export async function getBooks() {
-  const res = await fetch("http://localhost:3000/books");
-  if (!res.ok) throw new Error("Failed to fetch books");
+export async function getMembers() {
+  const res = await fetch("http://localhost:3000/members/all");
+  if (!res.ok) throw new Error("Failed to fetch members");
   return res.json();
 }
 
@@ -33,8 +27,8 @@ export async function getBooksCount() {
   return res.json();
 }
 
-export async function deleteBook(id: string) {
-  const res = await fetch(`http://localhost:3000/books/${id}`, {
+export async function deleteMember(id: string) {
+  const res = await fetch(`http://localhost:3000/member/${id}`, {
     method: "DELETE",
   });
 
