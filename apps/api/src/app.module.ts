@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
-
+import { MembersModule } from './members/member.module';
 import { AuthModule } from './auth/auth.module';
 import { BooksModule } from './books/books.module';
 import { BorrowedBooksModule } from './borrowed_books/borrowed_books.module';
@@ -40,6 +40,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     }),
 
     AuthModule,
+    MembersModule,
     BooksModule,
     BorrowedBooksModule,
   ],

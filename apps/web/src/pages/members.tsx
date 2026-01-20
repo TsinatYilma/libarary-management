@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import libraryIcon from "../assets/library-icon.png";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {}
 
 const Members = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -200,7 +202,7 @@ const Members = () => {
                   onChange={(e) =>
                     setNewMember({ ...newMember, role: e.target.value })
                   }
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all bg-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all bg-white text-black"
                 >
                   <option value="">Select a role</option>
                   <option value="Student">Student</option>
@@ -271,7 +273,7 @@ const Members = () => {
           {filteredMembers.map((member) => (
             <div
               key={member.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-fit"
             >
               <div className="bg-slate-700 text-white px-6 py-4 flex items-center justify-between">
                 <h3 className="font-semibold text-lg">{member.name}</h3>
