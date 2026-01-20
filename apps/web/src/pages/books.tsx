@@ -127,7 +127,7 @@ const Books = () => {
     mutationFn: borrowBook,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["borrowedBooks"] });
-      setAddDialogOpen(false);
+      setAddEmail(false);
     },
   });
   const handleBoodidtoBorrow = () => {
