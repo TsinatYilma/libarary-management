@@ -9,12 +9,21 @@
     "dev": "turbo run dev"
   },
   "devDependencies": {
-    "turbo": "^2.7.3"
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^25.1.0",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "turbo": "^2.7.3",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.17",
     "axios": "^1.13.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.0.0",
+    "mongoose": "^8.21.0",
     "zustand": "^5.0.9"
   }
 }
