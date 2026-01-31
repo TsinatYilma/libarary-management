@@ -1,0 +1,46 @@
+import { IncomingMessage, ServerResponse } from 'http';
+import { parseBody } from '../utils/helpers';
+import * as authService from '../services/authService';
+import { authGuard } from '../utils/authGuard';
+import { roleGuard } from '../utils/roleGuard';
+
+export async function handleAuth(req: IncomingMessage, res: ServerResponse) {
+  try {
+    if (req.method === 'POST' && req.url === '/auth/signup') {
+      const body = await parseBody(req);
+      const result = await authService.signup(body);
+      res.writeHead(201, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify(result));
+    }
+
+    if (req.method === 'POST' && req.url === '/auth/login') {
+      const body = await parseBody(req);
+      const result = await authService.login(body);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify(result));
+    }
+
+    const auth = await authGuard(req, res);
+    if (!auth) return;
+
+    if (req.method === 'GET' && req.url === '/auth/allUsers') {
+      const users = await authService.getAllUsers();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify(users));
+    }
+
+    if (req.method === 'GET' && req.url === '/auth/count') {
+      const count = await authService.countUsers();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ count }));
+    }
+
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: 'Route not found' }));
+
+  } catch (err: any) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: err.message }));
+  }
+}
+
